@@ -14,18 +14,17 @@ RUN apk upgrade -U && \
 # Small fixes
 RUN rm -fr /var/cache/apk/*
 
-#change bind address to 0.0.0.0
-RUN sed -i -r 's/bind-address.*$/bind-address = 0.0.0.0/' /etc/mysql/my.cnf
+COPY rootfs/ /
 
-ADD create_mariadb_admin_user.sh /create_mariadb_admin_user.sh
-ADD run.sh /run.sh
+ADD scripts/create_mariadb_admin_user.sh /create_mariadb_admin_user.sh
+ADD scripts/run.sh /run.sh
 RUN chmod 775 /*.sh
 
 # Define mountable directories
 VOLUME ["/etc/mysql", "/var/lib/mysql"]
 
 #Added to avoid in container connection to the database with mysql client error message "TERM environment variable not set"
-ENV TERM dumb
+ENV TERM="xterm"
 
 # Expose Ports
 EXPOSE 3306
